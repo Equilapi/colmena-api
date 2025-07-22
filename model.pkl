@@ -6,8 +6,7 @@ import pickle
 data = pd.DataFrame([
     {"cuadros_abejas": 9, "cuadros_cria": 6, "alimentada": 1, "tratamiento": 0, "enfermedades": 0, "salud": 0},
     {"cuadros_abejas": 4, "cuadros_cria": 2, "alimentada": 0, "tratamiento": 1, "enfermedades": 1, "salud": 2},
-    {"cuadros_abejas": 6, "cuadros_cria": 3, "alimentada": 1, "tratamiento": 1, "enfermedades": 1, "salud": 1},
-    # más datos...
+    {"cuadros_abejas": 6, "cuadros_cria": 3, "alimentada": 1, "tratamiento": 1, "enfermedades": 1, "salud": 1}
 ])
 
 X = data.drop("salud", axis=1)
