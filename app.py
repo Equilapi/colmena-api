@@ -4,6 +4,9 @@ import pickle
 
 app = Flask(__name__)
 
+# Definimos el peso promedio por cuadro o paleta
+PESO_PROMEDIO_POR_CUADRO = 2.5  # Ajusta este valor según tus datos
+
 # Cargar el modelo entrenado
 with open("modelo_salud.pkl", "rb") as f:
     modelo_salud = pickle.load(f)
@@ -65,3 +68,23 @@ def predecir_alza():
         "lista_para_alza": bool(pred),
         "confianza": round(prob, 2)
     })
+
+@app.route("/predecir-miel", methods=["POST"])
+def predecir_miel():
+    datos = request.get_json()
+    
+    # Validar que venga la cantidad de cuadros
+    if "cantidad_cuadros" not in datos:
+        return jsonify({"error": "Falta el campo 'cantidad_cuadros'"}), 400
+    
+    try:
+        cantidad = float(datos["cantidad_cuadros"])
+    except ValueError:
+        return jsonify({"error": "'cantidad_cuadros' debe ser un número"}), 400
+    
+    kilos_estimados = cantidad * PESO_PROMEDIO_POR_CUADRO
+    
+    return jsonify({
+        "cantidad_cuadros": cantidad,
+        "kilos_estimados": round(kilos_estimados, 2)
+})
