@@ -14,7 +14,7 @@ y = data["salud"]
 model = RandomForestClassifier()
 model.fit(X, y)
 
-with open("model_salud.pkl", "wb") as f:
+with open("modelo_salud.pkl", "wb") as f:
     pickle.dump(model, f)
 
 print("Modelo entrenado y guardado como model_salud.pkl")

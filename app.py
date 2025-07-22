@@ -5,11 +5,17 @@ import pickle
 app = Flask(__name__)
 
 # Cargar el modelo entrenado
-with open("model_salud.pkl", "rb") as f:
-    model = pickle.load(f)
+with open("modelo_salud.pkl", "rb") as f:
+    modelo_salud = pickle.load(f)
 
 with open("modelo_enjambrazon.pkl", "rb") as f:
-    modelo = pickle.load(f)
+    modelo_enjambrazon = pickle.load(f)
+
+with open("modelo_avispa.pkl", "rb") as f:
+    modelo_avispa = pickle.load(f)  
+
+with open("modelo_alza_espacio.pkl", "rb") as f:
+    modelo_alza_espacio = pickle.load(f)
 
 estado_colmena = {0: "Saludable", 1: "En observación", 2: "Crítica"}
 
@@ -17,21 +23,45 @@ estado_colmena = {0: "Saludable", 1: "En observación", 2: "Crítica"}
 def home():
     return "API de Predicción de Salud de Colmenas funcionando"
 
-@app.route("/predecir", methods=["POST"])
+@app.route("/predecir-salud", methods=["POST"])
 def predecir_salud():
     data = request.json
     df = pd.DataFrame([data])
-    pred = model.predict(df)[0]
+    pred = modelo_salud.predict(df)[0]
     return jsonify({"estado": estado_colmena[pred]})
 
 @app.route("/predecir-enjambrazon", methods=["POST"])
 def predecir_enjambrazon():
     datos = request.get_json()
     df = pd.DataFrame([datos])
-    pred = modelo.predict(df)[0]
-    prob = modelo.predict_proba(df)[0][1]
+    pred = modelo_enjambrazon.predict(df)[0]
+    prob = modelo_enjambrazon.predict_proba(df)[0][1]
 
     return jsonify({
         "enjambrazon_probable": bool(pred),
+        "confianza": round(prob, 2)
+    })
+
+@app.route("/predecir-avispa", methods=["POST"])
+def predecir_avispa():
+    datos = request.get_json()
+    df = pd.DataFrame([datos])
+    pred = modelo_avispa.predict(df)[0]
+    prob = modelo_avispa.predict_proba(df)[0][1]
+
+    return jsonify({
+        "riesgo_avispa": bool(pred),
+        "confianza": round(prob, 2)
+    })
+
+@app.route("/predecir-alza-espacio", methods=["POST"])
+def predecir_alza():
+    datos = request.get_json()
+    df = pd.DataFrame([datos])
+    pred = modelo_alza_espacio.predict(df)[0]
+    prob = modelo_alza_espacio.predict_proba(df)[0][1]
+
+    return jsonify({
+        "lista_para_alza": bool(pred),
         "confianza": round(prob, 2)
     })
